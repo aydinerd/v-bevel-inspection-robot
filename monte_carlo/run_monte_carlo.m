@@ -2,7 +2,7 @@
 % Rastgele kusur (0-5 adet) uretir, olcum zincirinden gecirir, tespit ve
 % dogruluk metriklerini cikarir. Ayrintilar: docs/MONTE_CARLO_NOTLAR.md
 % Calistirma:  >> cd monte_carlo; run_monte_carlo
-clear; clc; close all;
+close all;
 
 P = mc_params();
 outDir = fullfile(fileparts(mfilename('fullpath')), 'results');
