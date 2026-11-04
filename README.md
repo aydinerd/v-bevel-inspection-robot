@@ -97,6 +97,16 @@ The mechanical tolerances, defect criteria, and measurement decision rules are e
 * **Solartron Metrology:** *Analogue Gauging Probes & Signal Conditioning Units Technical Specifications (AX/5/S, OD5 MK II).*
 * **SICK Sensor Intelligence:** *DBV50 Core Measuring Wheel Encoders Technical Documentation (DBV50E-22ELA1000).*
 
+### 5. Academic Literature & Research Citations
+* **Han, X., Guo, N., Jie, Y., Wang, H., Wan, F., & Song, C. (2024).** *On Flange-Based 3D Hand-Eye Calibration for Soft Robotic Tactile Welding.* Measurement / [arXiv:2407.16041](https://arxiv.org/abs/2407.16041).  
+  $\rightarrow$ Justifies tactile/contact-based groove tracking immunity to industrial optical interference, spatter, and arc glare.
+* **Wang, Z. Z., et al. (2024).** *The Active Visual Sensing Methods for Robotic Welding: Review, Tutorial and Prospect.* [arXiv:2405.00685](https://arxiv.org/abs/2405.00685).  
+  $\rightarrow$ Benchmarks optical vs. tactile sensing trade-offs and highlights specular reflection limitations on machined steel bevels.
+* **Kukkadapu, K. A. (2026).** *Beyond Linearity: Full-Scale Response Modelling and Experimental Validation of LVDTs.* University of Antwerp / [arXiv:2606.15309](https://arxiv.org/abs/2606.15309).  
+  $\rightarrow$ Provides the analytical foundation for LVDT electromagnetic response, linearity limits (%0.5), temperature gain/offset drift, and sub-micron repeatability modeling.
+* **Raju, A., Madavath, A., Aubeeluck, C. Y., Pyschny, N., Hackelöer, F., & Zwanzig, F. (2026).** *Automated Weld Seam Recognition and 3D Mapping for Robotic Post Processing Using Photogrammetry and Semantic Segmentation.* TH Köln / [arXiv:2609.03970](https://arxiv.org/abs/2609.03970).  
+  $\rightarrow$ Reference framework for autonomous dimensional inspection and localized defect mapping along large-scale workpieces.
+
 ---
 
 ## 📁 Repository Structure
