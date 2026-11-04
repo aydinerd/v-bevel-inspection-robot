@@ -36,14 +36,14 @@ The inspection robot traverses the pre-machined V-groove at a constant velocity 
 
 ## 🛠️ Hardware & Sensor Specifications
 
-Sensor parameters implemented in the numerical model are derived directly from manufacturer datasheets and technical link tables:
+Key components and electro-mechanical specifications implemented in the inspection robot system:
 
-| Component | Model / Type | Technical Specifications | Source |
-|---|---|---|---|
-| **Contact Displacement Probe** | Solartron Metrology AX/5/S | $\pm 5\text{ mm}$ stroke, $0.5\%$ reading linearity, $0.07\text{ }\mu\text{m}$ repeatability | Catalog p. 15 |
-| **Signal Conditioning Unit** | Solartron OD5 MK II | $500\text{ Hz}$ bandwidth ($-3\text{ dB}$), $<1\text{ mV rms}$ output noise ($\approx 3.2\text{ }\mu\text{m}$ elec.) | Manual p. 24 |
-| **Position Encoder** | SICK DBV50E-22ELA1000 | Measuring wheel encoder, $0.2\text{ mm/pulse}$ ($1000\text{ P/R}$), $\pm 4\text{ mm/m}$ scale error limit | Datasheet pp. 2–3 |
-| **Traverse Drive System** | Autonomous Carriage | $20\text{ mm/s}$ constant velocity, $13\text{ m}$ continuous single-pass scan | Design Spec |
+| Component | Model / Type | Technical Specifications |
+|---|---|---|
+| **Contact Displacement Probe** | Solartron Metrology AX/5/S | $\pm 5\text{ mm}$ stroke, $0.5\%$ reading linearity, $0.07\text{ }\mu\text{m}$ repeatability |
+| **Signal Conditioning Unit** | Solartron OD5 MK II | $500\text{ Hz}$ bandwidth ($-3\text{ dB}$), $<1\text{ mV rms}$ output noise ($\approx 3.2\text{ }\mu\text{m}$ electrical) |
+| **Position Encoder** | SICK DBV50E-22ELA1000 | Measuring wheel encoder, $0.2\text{ mm/pulse}$ ($1000\text{ P/R}$), $\pm 4\text{ mm/m}$ scale error limit |
+| **Traverse Drive System** | Autonomous Carriage | $20\text{ mm/s}$ constant velocity, $13\text{ m}$ continuous single-pass scan |
 
 ---
 
