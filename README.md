@@ -4,6 +4,10 @@
 [![Simulink](https://img.shields.io/badge/Simulink-Enabled-orange.svg)](https://www.mathworks.com/products/simulink.html)
 [![Validation](https://img.shields.io/badge/Monte%20Carlo-5000%20Runs%20Verified-brightgreen.svg)](#monte-carlo-do%C4%9Frulama-ve-duyarl%C4%B1l%C4%B1k-analizi)
 [![Detection Rate](https://img.shields.io/badge/Detection%20Rate-100%25-success.svg)](#monte-carlo-do%C4%9Frulama-ve-duyarl%C4%B1l%C4%B1k-analizi)
+[![Institution](https://img.shields.io/badge/%C4%B0T%C3%9C-Makina%20M%C3%BChendisli%C4%9Fi-darkred.svg)](https://makina.itu.edu.tr/)
+
+> [!NOTE]
+> **Akademik Bilgilendirme:** Bu çalışma, **İstanbul Teknik Üniversitesi (İTÜ) Makina Mühendisliği Lisans Programı** bünyesinde okutulan **Mekatronik Sistem Tasarımı** dersi kapsamında hazırlanmış bir lisans mühendislik projesidir.
 
 Bu depo, kalın çelik plakalardaki (S335, 80 mm kalınlık) 13 metrelik kaynak ağzı boyunca otonom ilerleyerek derinlik ve profil kontrolü yapan **V-Ağzı Kalite Kontrol Robotu**'nun Simulink dinamik simülasyonunu ve stokastik Monte Carlo doğrulama ortamını içerir.
 
@@ -77,6 +81,32 @@ Sistem, rastgele kusur derinlikleri ($0.5-5.0\text{ mm}$), sıcaklık sapmaları
 #### Mekanik Titreşim Duyarlılığı
 Ağır fabrika ortamında mekanik titreşim $\sigma = 0.05\text{ mm}$'den $\sigma = 0.50\text{ mm}$'ye çıksa bile, sistem gerçek kusurların **%100'ünü** tespit etmeye devam etmektedir:
 ![Mekanik Titreşim Duyarlılık Eğrisi](docs/assets/mc_duyarlilik.png)
+
+---
+
+## 📚 İlgili Standartlar ve Referanslar
+
+Bu mekatronik sistem tasarımında ve doğrulama eşiklerinin belirlenmesinde aşağıdaki uluslararası standartlar ve endüstriyel referanslar esas alınmıştır:
+
+### 1. Kaynak ve Birleştirme Standartları
+* **ISO 9692-1:** *Welding and allied processes — Types of joint preparation — Part 1: Manual metal arc welding, gas-shielded metal arc welding, gas welding, TIG welding and beam welding of steels.*  
+  $\rightarrow$ V-kaynak ağzı açıları, kök aralığı ve kök yüzeyi geometrisi tolerans sınırlarının tanımlanmasında kullanılmıştır.
+* **ISO 5817:** *Welding — Fusion-welded joints in steel, nickel, titanium and their alloys — Quality levels for imperfections.*  
+  $\rightarrow$ Kaynak dikişi öncesi ve sonrası izin verilen geometrik sapma sınırları (B ve C kalite seviyeleri) referans alınmıştır.
+* **ISO 17637:** *Non-destructive testing of welds — Visual testing of fusion-welded joints.*  
+  $\rightarrow$ Kaynak ağzı geometrisinin boyutsal ve görsel muayene kriterleri.
+
+### 2. Malzeme ve Mekanik Standartlar
+* **EN 10025-2:** *Hot rolled products of structural steels — Part 2: Technical delivery conditions for non-alloy structural steels.*  
+  $\rightarrow$ İncelenen S335 / S355 yapı çeliği plakalarının mekanik dayanım ve boyutsal tolerans şartnameleri.
+
+### 3. Metroloji ve Karar Verme Kuralları
+* **ISO 14253-1:** *Geometrical product specifications (GPS) — Inspection by measurement of workpieces and measuring equipment — Part 1: Decision rules for verifying conformity or nonconformity with specifications.*  
+  $\rightarrow$ Ölçüm belirsizliği aralığında tolerans içi/dışı karar verme mekanizmasının ve alarm filtreleme eşiklerinin belirlenmesi.
+
+### 4. Sensör ve Donanım Katalogları
+* **Solartron Metrology:** *Analogue Gauging Probes & Signal Conditioning Units Technical Catalogue (AX/5/S, OD5 MK II).*
+* **SICK Sensor Intelligence:** *DBV50 Core Measuring Wheel Encoders Technical Specifications (DBV50E-22ELA1000).*
 
 ---
 
