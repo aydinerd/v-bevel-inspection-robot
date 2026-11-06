@@ -1,63 +1,71 @@
 function P = mc_params()
-%MC_PARAMS  Monte Carlo icin tum parametreler (tek yerde).
-%   Her parametrenin yaninda kaynak yazilidir:
-%     [DS]  = datasheet / katalog degeri
-%     [HES] = datasheet degerlerinden hesaplanan
-%     [VAR] = VARSAYIM (datasheet yok, dogrulanmadi)
-%   Kaynak dosyalar: Solartron analogue catalogue 2023 (sf. 14-15),
-%   OD5 MK II user manual 502645 (sf. 24), OD4/OD5 link table 502633,
-%   SICK DBV50E-22ELA1000 online datasheet.
+%MC_PARAMS  Cift Kanalli Monte Carlo Parametreleri (Tek Noktadan Yonetim)
+% =========================================================================
+%   Kanal 1: V-Kaynak Agzi Pah Derinligi (Dusey Solartron LVDT Probu)
+%   Kanal 2: Konik Plaka Kesim Radyusu (Yatay LVDT, 3-Nokta Kiris-Sehim Metodu)
+% =========================================================================
 
-%% Zaman ve robot
-P.dt     = 0.05;     % [s]  Monte Carlo adimi. [VAR] (Simulink modeli 0.01 s)
-P.Tstop  = 650;      % [s]  13 000 mm / 20 mm/s
-P.v      = 20;       % [mm/s] robot hizi (sabit varsayildi) [VAR]
+%% 1) Zaman ve Robot Kinematigi
+P.dt     = 0.05;     % [s]  Monte Carlo ornekleme adimi (Simulink 0.01 s)
+P.Tstop  = 650;      % [s]  13 000 mm / 20 mm/s tarama suresi
+P.v      = 20;       % [mm/s] sabit tarama hizi
 
-%% Nominal geometri (Simulink modeliyle ayni)
-P.Z1     = 80;       % [mm] ust referans yuzey
-P.Taban  = 50;       % [mm] sensor nominal okumasi
-P.Ideal  = 30;       % [mm] nominal V-agzi derinligi
-P.Tol    = 2;        % [mm] tolerans siniri
-P.tau    = 0.1;      % [s]  Transfer Fcn 1/(0.1 s + 1)
+%% 2) Kanal 1: V-Kaynak Agzi Geometrisi ve Toleransi
+P.Z1     = 80;       % [mm] plaka ust referans duzlemi (80 mm S335 celik plaka)
+P.Taban  = 50;       % [mm] sensor nominal temas montaj konumu
+P.Ideal  = 30;       % [mm] nominal V-agzi pah derinligi
+P.Tol    = 2.0;      % [mm] ISO 5817 Seviye B derinlik toleransi (+-2 mm)
+P.tau    = 0.1;      % [s]  1. derece filtre zaman sabiti (fc = 1.59 Hz)
 
-%% Kusur uretimi (rastgele)
-P.nMax       = 5;           % kusur sayisi ~ U{0..5}
-P.depthRange = [0.5 5];     % [mm] ekstra dalma derinligi ~ U
-P.durRange   = [5 40];      % [s]  kusur suresi (100 - 800 mm) [VAR]
-P.edgeMargin = 10;          % [s]  plaka basi/sonu bos pay [VAR]
-P.minGap     = 10;          % [s]  iki kusur arasi min bosluk [VAR]
+%% 3) Kanal 2: Plaka Kavis Yaricapi (3-Nokta Kiris-Sehim Sferometre Metodu)
+P.rad.L        = 400;      % [mm] sabit kilavuz makaralari arasi kiris mesafesi
+P.rad.R_nom    = 50.0;     % [m]  konik ruzgar kulesi acinim plakasi nominal kesim yaricapi
+P.rad.h_nom    = (P.rad.L^2) / (8 * P.rad.R_nom * 1000); % [mm] 0.400 mm nominal sehim
+P.rad.geomK    = (P.rad.L^2) / 8 / 1000;                 % [m*mm] = 20.0 (R [m] = geomK / h [mm])
+P.rad.range    = 1.0;      % [mm] yatay sehim LVDT calisma araligi (+-0.5 mm)
+P.rad.Tol      = 1.5;      % [m]  yaricap kabul toleransi (+-1.5 m, %3 kesim toleransi)
+P.rad.tau      = 0.15;     % [s]  yaricap filtresi zaman sabiti
 
-%% LVDT probu Solartron AX/5/S  [DS: katalog sf. 15]
-P.lvdt.range      = 5;       % [mm] +-5 mm olcum araligi
-P.lvdt.linPct     = 0.005;   % dogrusallik: %0.5 okuma
-P.lvdt.linMin_mm  = 0.005;   % ... veya 5 um, hangisi buyukse
-P.lvdt.repSigma   = 7e-5;    % [mm] tipik tekrarlanabilirlik 0.07 um (1 sigma)
-P.lvdt.tempCoef   = 1e-4;    % [1/C] 0.01 %FS/C (maksimum deger)
-P.lvdt.sens_mVmm  = 1575/5;  % [mV/mm] AX/5 tam skala 1575 mV / 5 mm [HES, link table]
+%% 4) Kusur Uretimi (Kanal 1: Derinlik Kusurlari)
+P.nMax       = 5;          % kosu basina max derinlik kusur sayisi ~ U{0..5}
+P.depthRange = [0.5 5.0];  % [mm] ekstra dalma derinligi
+P.durRange   = [5 40];     % [s]  kusur suresi (100 - 800 mm arasi lokal bozulma)
+P.edgeMargin = 10;         % [s]  plaka bas/son marji
+P.minGap     = 10;         % [s]  kusurlar arasi minimum emniyet mesafesi
 
-%% OD5 sartlandirici  [DS: OD5 MK II manual sf. 24]
+%% 5) Kusur Uretimi (Kanal 2: Yaricap Kusurlari / Torc Yolu Sapmalari)
+P.rad.nMax     = 3;        % kosu basina max yaricap kusuru ~ U{0..3}
+P.rad.devRange = [0.5 15]; % [m] yaricap sapmasi mutlak degeri (asiri kavis / duzlesme)
+P.rad.durRange = [10 50];  % [s] kavis bozulma bolgesi suresi
+
+%% 6) LVDT Probu (Solartron AX/5/S - Her iki kanalda ozdes yuksek hassasiyet)
+P.lvdt.range      = 5;       % [mm] +-5 mm tam skala olcum araligi
+P.lvdt.linPct     = 0.005;   % dogrusallik hatasi: %0.5 okuma
+P.lvdt.linMin_mm  = 0.005;   % minimum dogrusallik hatasi (5 um)
+P.lvdt.repSigma   = 7e-5;    % [mm] tekrarlanabilirlik 0.07 um (1 sigma)
+P.lvdt.tempCoef   = 1e-4;    % [1/C] sicaklik katsayisi
+P.lvdt.sens_mVmm  = 1575/5;  % [mV/mm] duyarllik
+
+%% 7) Sinyal Sartlandirici (Solartron OD5 MK II)
 P.od5.noise_mV    = 1;       % [mV rms] cikis gurultusu (< 1 mV rms)
-P.od5.linFRO      = 1e-3;    % dogrusallik < %0.1 FRO
-P.od5.tempCoef    = 1e-4;    % [1/C] kazanc/ofset < %0.01 FRO/C
-P.od5.bw_Hz       = 500;     % [Hz] -3 dB bant genisligi (filtreden cok genis)
-P.noise_elec_mm   = P.od5.noise_mV / P.lvdt.sens_mVmm;   % [mm rms] ~ 3.2 um [HES]
-P.dT              = 20;      % [C] sicaklik sapmasi ~ U(-dT, dT) [VAR]
+P.od5.linFRO      = 1e-3;    % tam skala dogrusallik < %0.1
+P.od5.tempCoef    = 1e-4;    % [1/C] termal kayma
+P.od5.bw_Hz       = 500;     % [Hz] analog bant genisligi
+P.noise_elec_mm   = P.od5.noise_mV / P.lvdt.sens_mVmm; % [mm rms] ~ 3.2 um
+P.dT              = 20;      % [C] atolye ici calisma sicakligi dalgalanmasi
 
-%% Enkoder SICK DBV50E-22ELA1000  [DS: online datasheet sf. 2-3]
-P.enc.res         = 0.2;     % [mm/darbe] 1000 P/R, 200 mm cevre
-P.enc.scaleErr    = 0.004;   % +-4 mm/m olcek hatasi (tekerlek+yuzeye bagli)
-P.enc.stepDev     = 0.05;    % +-18 derece elektriksel = +-%5 darbe
+%% 8) Temasli Tekerlek Enkoderi (SICK DBV50E-22ELA1000)
+P.enc.res         = 0.2;     % [mm/darbe] cozunurluk
+P.enc.scaleErr    = 0.004;   % +-4 mm/m tekerlek yuvarlanma olcek toleransi
+P.enc.stepDev     = 0.05;    % +-%5 elektriksel darbe sapmasi
 
-%% Mekanik / yuzey gurultusu  [VAR - datasheet YOK]
-% Beyaz gurultu sigma'si, dt = P.dt orneklemesinde. Atolye titresimi,
-% V-agzi yuzey puruzu, uc asinmasi, robot egilmesini temsil eder.
-P.mechSigmaRange  = [0.05 0.5];          % [mm] ana kosu: kosu basina ~ U
-P.mechSigmaSweep  = [0.05 0.15 0.3 0.5]; % [mm] duyarlilik taramasi
+%% 9) Mekanik ve Yuzey Gurultuleri
+P.mechSigmaRange  = [0.05 0.5];          % [mm] Kanal 1 mekanik titresim / puruzluluk
+P.mechSigmaSweep  = [0.05 0.15 0.3 0.5]; % [mm] duyarlilik taramasi seviyeleri
+P.rad.sigmaRange  = [0.001 0.004];       % [mm] Kanal 2 frezelenmis kok burnu sehim temas gurultusu
 
-%% Degerlendirme
-P.evalMargin      = 1;       % [s] kusur penceresi toleransi (filtre gecikmesi)
-
-%% Monte Carlo
-P.nRuns   = 1000;
-P.seed    = 20261104;
+%% 10) Degerlendirme ve Kosu Ayarlari
+P.evalMargin      = 1.0;     % [s] gecikme tolerans penceresi
+P.nRuns   = 1000;            % standart Monte Carlo kosu adedi
+P.seed    = 20261104;        % tekrarlanabilir rastgele sayi uretici tohumu
 end

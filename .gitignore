@@ -1,5 +1,22 @@
+# MATLAB / Simulink runtime & results
 monte_carlo/results/
 slprj/
 *.slxc
 *.asv
 *.autosave
+*.mat
+
+# Academic Project Reports & Personal Documents (Local Only - do not push to GitHub)
+docs/PROJE_RAPORU*
+docs/EK_YAPAY_ZEKA*
+docs/YAPAY_ZEKA*
+docs/*.docx
+docs/*.pdf
+docs/*.html
+docs/MONTE_CARLO_NOTLAR.md
+!docs/assets/**
+*.docx
+*.pdf
+
+# Python scratch tools
+*.py

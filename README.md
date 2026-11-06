@@ -1,133 +1,163 @@
-# V-Bevel Quality Control & Inspection Robot
+# Çift Problu V-Kaynak Ağzı ve Plaka Kesim Radyusu Kalite Kontrol Robotu
 
 [![MATLAB](https://img.shields.io/badge/MATLAB-R2026b-blue.svg)](https://www.mathworks.com/products/matlab.html)
-[![Simulink](https://img.shields.io/badge/Simulink-Enabled-orange.svg)](https://www.mathworks.com/products/simulink.html)
-[![Validation](https://img.shields.io/badge/Monte%20Carlo-5000%20Runs%20Verified-brightgreen.svg)](#2-monte-carlo-stochastic-validation-5000-runs)
-[![Detection Rate](https://img.shields.io/badge/Detection%20Rate-100%25-success.svg)](#2-monte-carlo-stochastic-validation-5000-runs)
-[![Institution](https://img.shields.io/badge/%C4%B0T%C3%9C-Mechanical%20Engineering-darkred.svg)](https://makina.itu.edu.tr/en)
+[![Simulink](https://img.shields.io/badge/Simulink-Dual%20Channel%20Model-orange.svg)](https://www.mathworks.com/products/simulink.html)
+[![Validation](https://img.shields.io/badge/Monte%20Carlo-5000%20Runs%20Verified-brightgreen.svg)](#2-monte-carlo-stokastik-doğrulaması-5000-koşu)
+[![Detection Rate](https://img.shields.io/badge/Detection%20Rate-100%25-success.svg)](#2-monte-carlo-stokastik-doğrulaması-5000-koşu)
+[![Institution](https://img.shields.io/badge/İTÜ-Makina%20Mühendisliği-darkred.svg)](https://makina.itu.edu.tr)
 
 > [!NOTE]
-> **Academic Notice:** This project was developed as an undergraduate engineering capstone study for the **Mechatronic System Design** course within the **Mechanical Engineering Undergraduate Program** at **Istanbul Technical University (ITU)**.
+> **Akademik Bildirim:** Bu proje, **İstanbul Teknik Üniversitesi (İTÜ) Makina Mühendisliği Lisans Programı** bünyesinde yürütülen **Mekatronik Sistem Tasarımı** dersi kapsamında **Aydıner Dikme (030220086)** tarafından geliştirilmiştir.
 
-This repository hosts the dynamic Simulink simulation model and stochastic Monte Carlo validation framework for an autonomous **V-Bevel Quality Control (QC) Robot** designed to inspect groove depth and dimensional profile tolerances on thick structural steel plates (S335, $80\text{ mm}$ thickness) along a $13\text{ m}$ weld seam.
+Bu proje deposu, kalın yapısal çelik plakalarda ($80\text{ mm}$ S335) $13\text{ metre}$ boyundaki plaka kenarında hem **kaynak ağzı pah derinliğini** hem de silindirik/konik kule bükümü öncesi **düz kesim kavis yarıçapını (radyusunu)** eş zamanlı denetleyen otonom manyetik tekerlekli kalite kontrol robotunun **Simulink dinamik modelini** ve **5000 koşuluk Monte Carlo güvenilirlik analizini** barındırmaktadır.
 
----
-
-## 📌 Project Overview & Working Principle
-
-The inspection robot traverses the pre-machined V-groove at a constant velocity of $v = 20\text{ mm/s}$ ($13\text{ meters} = 650\text{ seconds}$). An LVDT contact displacement probe coupled with a high-resolution measuring wheel encoder records the continuous longitudinal depth profile.
-
-* **Nominal Geometry:** Upper reference plate surface $Z_1 = 80\text{ mm}$, sensor fixture baseline $50\text{ mm}$, nominal V-groove depth $30\text{ mm}$.
-* **Tolerance Boundary:** $\pm 2.0\text{ mm}$ depth deviation from the nominal $30\text{ mm}$ profile is defined as the acceptable tolerance limit. Any excursion beyond this threshold triggers a real-time defect alarm.
-* **Signal Conditioning & Filtering:** Workshop floor vibrations, mechanical chatter, and surface roughness are filtered via a first-order low-pass transfer function:
-  $$G(s) = \frac{1}{0.1s + 1}$$
-
-```
-[ Solartron LVDT Probe ] ---> [ Noise / Vibration ] ---> [ Low-Pass Filter (0.1s) ]
-                                                                     |
-[ SICK Wheel Encoder ] ----------------------------------> [ Differential Depth Estimation ]
-                                                                     |
-                                                           [ Tolerance Evaluator (|e| > 2mm) ]
-                                                                     |
-                                                               [ ALARM / LOG ]
-```
+<p align="center">
+  <img src="docs/assets/ROBOT_3D_ISOMETRIK_CAD_GORUNUM.jpg" width="70%" alt="Robot 3D CAD Isometric View" />
+</p>
 
 ---
 
-## 🛠️ Hardware & Sensor Specifications
+## 📌 Çift Kanallı Denetim Mimarisi ve Çalışma İlkesi
 
-Key components and electro-mechanical specifications implemented in the inspection robot system:
-
-| Component | Model / Type | Technical Specifications |
-|---|---|---|
-| **Contact Displacement Probe** | Solartron Metrology AX/5/S | $\pm 5\text{ mm}$ stroke, $0.5\%$ reading linearity, $0.07\text{ }\mu\text{m}$ repeatability |
-| **Signal Conditioning Unit** | Solartron OD5 MK II | $500\text{ Hz}$ bandwidth ($-3\text{ dB}$), $<1\text{ mV rms}$ output noise ($\approx 3.2\text{ }\mu\text{m}$ electrical) |
-| **Position Encoder** | SICK DBV50E-22ELA1000 | Measuring wheel encoder, $0.2\text{ mm/pulse}$ ($1000\text{ P/R}$), $\pm 4\text{ mm/m}$ scale error limit |
-| **Traverse Drive System** | Autonomous Carriage | $20\text{ mm/s}$ constant velocity, $13\text{ m}$ continuous single-pass scan |
-
----
-
-## 📊 Simulation Outputs & Performance Metrics
-
-### 1. Simulink Dynamic Inspection (`V_Kaynak_QC_Robot.slx`)
-The baseline dynamic model evaluates a full 650-second plate scan containing two localized excessive penetration defects ($3.5\text{ mm}$ depth deviation) located at intervals $100–120\text{ s}$ and $350–380\text{ s}$:
-* **Defect 1 (100–120 s):** $3.508\text{ mm}$ measured deviation $\rightarrow$ **DETECTED [ALARM TRIGGERED]**
-* **Defect 2 (350–380 s):** $3.499\text{ mm}$ measured deviation $\rightarrow$ **DETECTED [ALARM TRIGGERED]**
-* **Baseline Filtered Noise:** $\pm 0.069\text{ mm}$ standard deviation (retains steady-state reading safely within tolerance limits).
-
-### 2. Monte Carlo Stochastic Validation (5000 Runs)
-To evaluate the inspection system under realistic manufacturing conditions, a comprehensive Monte Carlo campaign ($1000$ baseline runs $+ 4 \times 1000$ sensitivity sweeps) was conducted. Each run synthesizes random defect counts ($0–5$ defects/plate), random defect locations along the $13\text{ m}$ plate, durations ($5–40\text{ s}$, corresponding to $100–800\text{ mm}$ length), depths ($0.5–5.0\text{ mm}$), temperature drift ($\pm 20^\circ\text{C}$), and mechanical contact noise:
-
-* **Out-of-Tolerance Defect Detection ($>2.0\text{ mm}$):** **100.00%** ($1660 / 1660$ defects accurately identified)
-* **False Alarm Rate in Defect-Free Zones:** **0.000 episodes/scan** (zero false rejections on clean bevel sections)
-* **Mean Detection Latency:** **$0.12\text{ s}$** (consistent with the $\tau = 0.1\text{ s}$ filter time constant)
-* **Plateau Depth Measurement Error:** Mean **$-5.7\text{ }\mu\text{m}$**, standard deviation $29.0\text{ }\mu\text{m}$
-* **Defect Localization Error (Encoder):** Mean **$2.1\text{ mm}$**, standard deviation $16.9\text{ mm}$ (well within the $\pm 52\text{ mm}$ cumulative limit over $13\text{ m}$)
-
-#### Validation Distributions
-![Monte Carlo Validation Summary](docs/assets/mc_ozet.png)
-
-#### Mechanical Vibration Sensitivity Sweep
-Even as workshop vibration and bevel surface roughness increase ten-fold from $\sigma = 0.05\text{ mm}$ to $\sigma = 0.50\text{ mm}$, the robot maintains a **100.00%** detection rate for all out-of-tolerance weld preparation defects:
-![Mechanical Vibration Sensitivity Curve](docs/assets/mc_duyarlilik.png)
-
----
-
-## 📚 Applicable Standards & Engineering References
-
-The mechanical tolerances, defect criteria, and measurement decision rules are established in accordance with the following international standards:
-
-### 1. Welding & Joint Preparation Standards
-* **ISO 9692-1:** *Welding and allied processes — Types of joint preparation — Part 1: Manual metal arc welding, gas-shielded metal arc welding, gas welding, TIG welding and beam welding of steels.*  
-  $\rightarrow$ Governs nominal V-groove bevel angles, root faces, root gap geometries, and dimensional tolerances.
-* **ISO 5817:** *Welding — Fusion-welded joints in steel, nickel, titanium and their alloys — Quality levels for imperfections.*  
-  $\rightarrow$ Defines defect acceptance boundaries and geometric deviation limits (Quality levels B and C).
-* **ISO 17637:** *Non-destructive testing of welds — Visual testing of fusion-welded joints.*  
-  $\rightarrow$ Dimensional inspection methodologies for pre-weld and post-weld joint assessment.
-
-### 2. Structural Materials Standards
-* **EN 10025-2:** *Hot rolled products of structural steels — Part 2: Technical delivery conditions for non-alloy structural steels.*  
-  $\rightarrow$ Specifies mechanical properties and dimensional tolerances for structural S335 / S355 steel grade plates.
-
-### 3. Metrology & Decision Rule Standards
-* **ISO 14253-1:** *Geometrical product specifications (GPS) — Inspection by measurement of workpieces and measuring equipment — Part 1: Decision rules for verifying conformity or nonconformity with specifications.*  
-  $\rightarrow$ Defines statistical decision rules under measurement uncertainty for evaluating in-tolerance versus out-of-tolerance states.
-
-### 4. Sensor & Equipment Technical Documentation
-* **Solartron Metrology:** *Analogue Gauging Probes & Signal Conditioning Units Technical Specifications (AX/5/S, OD5 MK II).*
-* **SICK Sensor Intelligence:** *DBV50 Core Measuring Wheel Encoders Technical Documentation (DBV50E-22ELA1000).*
-
-### 5. Academic Literature & Research Citations
-* **Han, X., Guo, N., Jie, Y., Wang, H., Wan, F., & Song, C. (2024).** *On Flange-Based 3D Hand-Eye Calibration for Soft Robotic Tactile Welding.* Measurement / [arXiv:2407.16041](https://arxiv.org/abs/2407.16041).  
-  $\rightarrow$ Justifies tactile/contact-based groove tracking immunity to industrial optical interference, spatter, and arc glare.
-* **Wang, Z. Z., et al. (2024).** *The Active Visual Sensing Methods for Robotic Welding: Review, Tutorial and Prospect.* [arXiv:2405.00685](https://arxiv.org/abs/2405.00685).  
-  $\rightarrow$ Benchmarks optical vs. tactile sensing trade-offs and highlights specular reflection limitations on machined steel bevels.
-* **Kukkadapu, K. A. (2026).** *Beyond Linearity: Full-Scale Response Modelling and Experimental Validation of LVDTs.* University of Antwerp / [arXiv:2606.15309](https://arxiv.org/abs/2606.15309).  
-  $\rightarrow$ Provides the analytical foundation for LVDT electromagnetic response, linearity limits (%0.5), temperature gain/offset drift, and sub-micron repeatability modeling.
-* **Raju, A., Madavath, A., Aubeeluck, C. Y., Pyschny, N., Hackelöer, F., & Zwanzig, F. (2026).** *Automated Weld Seam Recognition and 3D Mapping for Robotic Post Processing Using Photogrammetry and Semantic Segmentation.* TH Köln / [arXiv:2609.03970](https://arxiv.org/abs/2609.03970).  
-  $\rightarrow$ Reference framework for autonomous dimensional inspection and localized defect mapping along large-scale workpieces.
-
----
-
-## 📁 Repository Structure
+Robot, $13\text{ metrelik}$ plaka boyunca sabit $v = 20\text{ mm/s}$ hızla ilerler ($650\text{ saniye}$). Şasi üzerinde iki bağımsız LVDT deplasman probu ve bir yüksek çözünürlüklü temaslı tekerlek enkoderi yer alır:
 
 ```text
-v-bevel-inspection-robot/
-├── main.m                    # Master execution script (Simulink simulation + Monte Carlo)
-├── V_Kaynak_QC_Robot.slx      # Simulink block diagram model
-├── vkaynak_qc_robot.m        # Model generation script
-├── docs/                     # Technical documentation and graphical assets
-│   ├── MONTE_CARLO_NOTLAR.md # Detailed mathematical background and assumptions
-│   └── assets/               # High-resolution validation figures
-└── monte_carlo/              # Modular stochastic simulation library
-    ├── mc_params.m           # Nominal system parameters
-    ├── mc_simulate_run.m     # Single-run simulation engine
-    └── run_monte_carlo.m     # Standalone Monte Carlo runner
+                                      [ MEKATRONİK SİSTEM ŞEMASI ]
+
+  [ Plaka Üst Yüzeyi Z1 = 80 mm ] 
+            |
+            v
+  +-------------------------------------------------------------------------------------------------+
+  | KANAL 1: Düşey LVDT Probu (Solartron AX/5/S)                                                   |
+  | -> Pah Kök Derinliği: e(t) = Z1 - u(t)  | Nominal: 30.0 mm | Tolerans: +-2.0 mm (ISO 5817-B)   |
+  +-------------------------------------------------------------------------------------------------+
+            |
+            |   [ 13 m Plaka Kenarı Boyunca Tarama (v = 20 mm/s, T = 650 s) ]
+            v
+  +-------------------------------------------------------------------------------------------------+
+  | KANAL 2: Yatay LVDT Probu (3-Nokta Kiriş-Sehim / Sferometre Yöntemi)                             |
+  | -> Sabit Makaralar Arası Kiriş L = 400 mm | Ölçülen Sehim h(t)                                  |
+  | -> Hesaplanan Kavis Yarıçapı: R(t) = L^2 / (8 * h) = 20 / h [m]                                 |
+  | -> Nominal Yarıçap: R_nom = 50.0 m (h_nom = 0.400 mm) | Tolerans: +-1.5 m (+-%3)               |
+  +-------------------------------------------------------------------------------------------------+
+            |
+            v
+  +-------------------------------------------------------------------------------------------------+
+  | Sinyal Filtreleme & Karar Mekanizması:                                                          |
+  | -> 1. Derece Alçak Geçiren Filtreler: G_dep(s) = 1/(0.1s+1), G_rad(s) = 1/(0.15s+1)             |
+  | -> Enkoder (SICK DBV50E): 0.2 mm/darbe çözünürlük ile kusur boyuna konum tespiti                |
+  | -> Çift Kanallı Tolerans Kıyaslayıcı: (|Delta e| > 2 mm) VEYA (|Delta R| > 1.5 m) -> ALARM / LOG|
+  +-------------------------------------------------------------------------------------------------+
+```
+
+### 1. Kanal 1: Kaynak Ağzı Pah Derinliği $e(x)$
+* **Geometri:** Üst referans $Z_1 = 80\text{ mm}$, taban montajı $50\text{ mm}$, nominal derinlik $30\text{ mm}$.
+* **Tolerans:** ISO 5817 Seviye B standardı gereği $\pm 2.0\text{ mm}$ ($28.0\text{ mm} \le e \le 32.0\text{ mm}$).
+* **Kusur Durumu:** Kök paso dalma derinliği kaçıklıkları (örn. $+3.5\text{ mm}$ aşırı dalma).
+
+<p align="center">
+  <img src="docs/assets/V_Agzi_Geometrisi_Teknik_Sema.png" width="65%" alt="Kaynak Agzi Geometrisi" />
+</p>
+
+### 2. Kanal 2: Konik Plaka Kesim Eğrilik Yarıçapı $R(x)$ (3-Nokta Kiriş-Sehim Yöntemi)
+Rüzgar kulesi ve konik basınçlı kap imalatında plakalar bükülmeden önce açınım geometrisi gereği kavisli (radyuslu) kesilir. Robotun yan tarafında kök burnuna dayanan iki kılavuz rulman arası mesafe $L = 400.0\text{ mm}$'dir. Tam ortada bulunan yay baskılı yatay LVDT prob ucu kök burnu sehimini ($h$) ölçer:
+
+$$R(t) = \frac{L^2}{8 \cdot h(t)} + \frac{h(t)}{2} \approx \frac{L^2}{8 \cdot h(t)}$$
+
+* Nominal konik açınım yarıçapı $R_{\text{nom}} = 50.0\text{ m} = 50\,000\text{ mm}$ için:
+  $$h_{\text{nom}} = \frac{400^2}{8 \times 50000} = \frac{160000}{400000} = 0.400\text{ mm} = 400\ \mu\text{m}$$
+* Formül basitleştirmesi: $R\text{ [m]} = \frac{20}{h\text{ [mm]}}$.
+* Tolerans Bandı: $50.0\text{ m} \pm 1.5\text{ m}$ ($\pm \%3$ kesim toleransı). Sehim karşılığı $h \in [0.388\text{ mm}, 0.412\text{ mm}]$ ($\Delta h \approx \pm 12\ \mu\text{m}$).
+* Tekerlek kaymasından tamamen bağımsız, yerel geometrik 3-nokta temas ölçümüdür.
+
+<p align="center">
+  <img src="docs/assets/SEKIL_6_1_KONIK_RADYUS_OLCUM_SEMASI.png" width="70%" alt="3-Nokta Kiris Sehim Olcum Semasi" />
+</p>
+
+---
+
+## 🛠️ Donanım ve Sensör Özellikleri
+
+| Bileşen | Marka / Model | Teknik Özellikler |
+|---|---|---|
+| **Düşey Deplasman Probu (K1)** | Solartron Metrology AX/5/S | $\pm 5\text{ mm}$ aralık, $0.5\%$ doğrusallık, $0.07\ \mu\text{m}$ tekrarlanabilirlik |
+| **Yatay Deplasman Probu (K2)** | Solartron Metrology AX/5/S | 3-nokta kiriş-sehim temaslı yatay prob, nominal sehim $0.400\text{ mm}$ |
+| **Sinyal Şartlandırıcı (2 Kanal)**| Solartron OD5 MK II | $500\text{ Hz}$ bant genişliği, $<1\text{ mV rms}$ gürültü ($\approx 3.2\ \mu\text{m}$) |
+| **Konum Enkoderi** | SICK DBV50E-22ELA1000 | $0.2\text{ mm/darbe}$ ($1000\text{ P/R}$), $\pm 4\text{ mm/m}$ ölçek toleransı |
+| **Yürüyüş Sistemi** | Otonom Manyetik Palet | $20\text{ mm/s}$ sabit hız, $13\text{ m}$ tek paso kesintisiz tarama |
+
+---
+
+## 📊 Simülasyon Çıktıları ve Doğrulama Metrikleri
+
+### 1. Simulink Çift Kanallı Dinamik Simülasyon (`V_Kaynak_QC_Robot.slx`)
+650 saniyelik 13 m plaka taraması boyunca her iki kanalda yapay kusurlar eş zamanlı koşturulmuştur:
+* **Kanal 1 (Derinlik) Kusur 1 (100–120 s):** Ölçülen sapma $+3.508\text{ mm}$ (Hedef: $+3.5\text{ mm}$) $\rightarrow$ **TESPİT EDİLDİ [ALARM]**
+* **Kanal 1 (Derinlik) Kusur 2 (350–380 s):** Ölçülen sapma $+3.499\text{ mm}$ (Hedef: $+3.5\text{ mm}$) $\rightarrow$ **TESPİT EDİLDİ [ALARM]**
+* **Kanal 2 (Radyus) Kusur R1 (200–240 s):** Ölçülen yarıçap $38.13\text{ m}$ (Hedef: $38.0\text{ m}$) $\rightarrow$ **TESPİT EDİLDİ [ALARM - AŞIRI KAVİS]**
+* **Kanal 2 (Radyus) Kusur R2 (480–520 s):** Ölçülen yarıçap $65.79\text{ m}$ (Hedef: $65.0\text{ m}$) $\rightarrow$ **TESPİT EDİLDİ [ALARM - DÜZLEŞME]**
+* **Normal Bölgeler:** Filtrelenmiş derinlik sapması $\pm 0.069\text{ mm}$, hesaplanan yarıçap $49.94\text{ m}$ (tolerans sınırları içinde güvenli denetim).
+
+### 2. Monte Carlo Stokastik Doğrulaması (5000 Koşu)
+5000 farklı plaka taramasıyla ($13\,000\text{ km}$ eşdeğeri sanal fabrika denetimi) sistemin istatistiksel güvenilirliği test edilmiştir:
+
+* **Kanal 1 (Derinlik) Tolerans Dışı Kusur Tespiti ($>2.0\text{ mm}$):** **%100.00** ($8286 / 8286$ kusur eksiksiz yakalandı)
+* **Kanal 2 (Radyus) Tolerans Dışı Kusur Tespiti ($|\Delta R|>1.5\text{ m}$):** **%100.00** ($6991 / 6991$ kavis kusuru eksiksiz yakalandı)
+* **Temiz Bölgede Asılsız Alarm Oranı:**
+  * Kanal 1: **0.000 / tarama** (sıfır yanlış ret)
+  * Kanal 2: **0.004 / tarama** (ihmal edilebilir)
+* **Ölçüm Hataları:**
+  * Düşey LVDT derinlik hatası: Ortalama **$-5.02\ \mu\text{m}$** (std: $28.5\ \mu\text{m}$)
+  * Yatay LVDT kavis kestirim hatası: Ortalama **$0.04\text{ m}$** ($50\text{ metre}$ yarıçapta yalnızca $\%0.08$ hata!)
+* **Kusur Konumlandırma Hatası (Enkoder):** Ortalama **$0.9 - 2.5\text{ mm}$** ($13\text{ m}$ boyunca).
+
+<p align="center">
+  <img src="docs/assets/mc_ozet.png" width="80%" alt="Monte Carlo Sonuclari 5000 Kosu" />
+</p>
+
+### 3. Atölye Zemin Titreşim Duyarlılığı
+<p align="center">
+  <img src="docs/assets/mc_duyarlilik.png" width="75%" alt="Titresim Duyarlilik Analizi" />
+</p>
+
+---
+
+## 🚀 Tek Tıkla Çalıştırma (F5)
+
+MATLAB komut satırında veya editöründe:
+```matlab
+main
+```
+veya doğrudan `main.m` dosyasını açıp klavyeden **F5** tuşuna basmanız yeterlidir. Script sırasıyla:
+1. Simulink modelini koşturur ve 2 panelli dinamik tarama grafiğini ve Scope'u açar.
+2. 5000 koşuluk Monte Carlo analizini koşturur (~10 saniye).
+3. 4 panelli Monte Carlo özet figürünü ve titreşim duyarlılık grafiğini ekrana getirir.
+
+---
+
+## 📁 Proje Klasör Yapısı
+
+```text
+v-bevel-inspection-robot-radyus/
+├── main.m                    # Tek tıkla çalıştırıcı (Simulink + 5000 Monte Carlo)
+├── V_Kaynak_QC_Robot.slx      # Çift kanallı Simulink blok diyagram modeli
+├── vkaynak_qc_robot.m        # Çift kanallı Simulink modelini sıfırdan oluşturan script
+├── README.md                 # Sistem mühendislik dokümantasyonu
+├── docs/                     # Şemalar, CAD renderlar ve simülasyon grafikleri
+│   └── assets/               # Şekiller ve grafik çıktıları
+└── monte_carlo/              # Stokastik simülasyon kütüphanesi
+    ├── mc_params.m           # Çift kanallı nominal sistem parametreleri
+    ├── mc_simulate_run.m     # Tekil tarama simülatörü
+    └── run_monte_carlo.m     # Bağımsız Monte Carlo koşturucusu
 ```
 
 ---
 
-## ⚙️ System Requirements
+## 📚 Standartlar ve Akademik Kaynaklar
 
-* **MATLAB & Simulink:** R2020a or later (verified on MATLAB R2026b).
-* Standard MATLAB and Simulink installations; no specialized external toolboxes are required.
+1. **ISO 9692-1:2013:** *Kaynak ve ilgili işlemler — Kaynak ağzı hazırlığı tipleri.*
+2. **ISO 5817:2023:** *Çelik, nikel, titanyum ve alaşımlarında ergitme kaynaklı birleştirmeler — Kusurlar için kalite seviyeleri (Seviye B).*
+3. **ISO 14253-1:2017:** *Geometrik ürün özellikleri (GPS) — Ölçümle muayene ve karar kuralları.*
+4. **EN 1090-2 & EN 10025-2:** *Çelik yapı imalatı toleransları ve S335 yapısal çelik sac teknik teslim şartları.*
+5. **Solartron Metrology:** *AX/5/S ve OD5 MK II LVDT Teknik Kataloğu ve Kullanım Kılavuzu.*
+6. **SICK AG:** *DBV50 Core Ölçüm Tekerlekli Enkoder Teknik Kataloğu.*
