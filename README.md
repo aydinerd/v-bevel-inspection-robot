@@ -11,10 +11,6 @@
 
 Bu proje deposu, kalın yapısal çelik plakalarda ($80\text{ mm}$ S335) $13\text{ metre}$ boyundaki plaka kenarında hem **kaynak ağzı pah derinliğini** hem de silindirik/konik kule bükümü öncesi **düz kesim kavis yarıçapını (radyusunu)** eş zamanlı denetleyen otonom manyetik tekerlekli kalite kontrol robotunun **Simulink dinamik modelini** ve **5000 koşuluk Monte Carlo güvenilirlik analizini** barındırmaktadır.
 
-<p align="center">
-  <img src="docs/assets/ROBOT_3D_ISOMETRIK_CAD_GORUNUM.jpg" width="70%" alt="Robot 3D CAD Isometric View" />
-</p>
-
 ---
 
 ## 📌 Çift Kanallı Denetim Mimarisi ve Çalışma İlkesi
@@ -122,28 +118,15 @@ $$R(t) = \frac{L^2}{8 \cdot h(t)} + \frac{h(t)}{2} \approx \frac{L^2}{8 \cdot h(
 
 ---
 
-## 🚀 Tek Tıkla Çalıştırma (F5)
-
-MATLAB komut satırında veya editöründe:
-```matlab
-main
-```
-veya doğrudan `main.m` dosyasını açıp klavyeden **F5** tuşuna basmanız yeterlidir. Script sırasıyla:
-1. Simulink modelini koşturur ve 2 panelli dinamik tarama grafiğini ve Scope'u açar.
-2. 5000 koşuluk Monte Carlo analizini koşturur (~10 saniye).
-3. 4 panelli Monte Carlo özet figürünü ve titreşim duyarlılık grafiğini ekrana getirir.
-
----
-
 ## 📁 Proje Klasör Yapısı
 
 ```text
 v-bevel-inspection-robot-radyus/
-├── main.m                    # Tek tıkla çalıştırıcı (Simulink + 5000 Monte Carlo)
+├── main.m                    # Ana simülasyon ve analiz betiği (Simulink + Monte Carlo)
 ├── V_Kaynak_QC_Robot.slx      # Çift kanallı Simulink blok diyagram modeli
 ├── vkaynak_qc_robot.m        # Çift kanallı Simulink modelini sıfırdan oluşturan script
 ├── README.md                 # Sistem mühendislik dokümantasyonu
-├── docs/                     # Şemalar, CAD renderlar ve simülasyon grafikleri
+├── docs/                     # Şemalar ve simülasyon grafikleri
 │   └── assets/               # Şekiller ve grafik çıktıları
 └── monte_carlo/              # Stokastik simülasyon kütüphanesi
     ├── mc_params.m           # Çift kanallı nominal sistem parametreleri

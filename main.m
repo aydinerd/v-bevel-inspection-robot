@@ -1,4 +1,4 @@
-%% V-KAYNAK AĞZI VE PLAKA RADYUSU KALİTE KONTROL ROBOTU - TEK TIKLA ÇALIŞTIRMA
+%% V-KAYNAK AĞZI VE PLAKA RADYUSU KALİTE KONTROL ROBOTU
 % =========================================================================
 % PROJE: Otonom Manyetik Paletli V-Kaynak Ağzı ve Plaka Kesim Kavis Kalite Kontrol Robotu
 % ÖĞRENCİ: Aydıner Dikme (030220086) | İTÜ Makina Mühendisliği
@@ -7,10 +7,6 @@
 % ÇİFT KANALLI DENETİM MİMARİSİ:
 %   1. Kanal (Düşey LVDT Prob): 80 mm S335 plaka kaynak ağzı pah derinliği e(x) [+-2.0 mm]
 %   2. Kanal (Yatay LVDT Prob): 3-nokta kiriş-sehim sferometre ile plaka kesim yarıçapı R(x) [+-1.5 m]
-%
-% KULLANIM:
-%   Bu dosyayı MATLAB'da açıp F5 tuşuna basın (veya "Run" butonuna tıklayın).
-%   Tüm simülasyon, 5000 koşuluk Monte Carlo analizi ve grafikler otomatik üretilir.
 % =========================================================================
 
 clear; clc; close all;
