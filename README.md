@@ -6,9 +6,6 @@
 [![Detection Rate](https://img.shields.io/badge/Detection%20Rate-100%25-success.svg)](#2-monte-carlo-stokastik-doğrulaması-5000-koşu)
 [![Institution](https://img.shields.io/badge/İTÜ-Makina%20Mühendisliği-darkred.svg)](https://makina.itu.edu.tr)
 
-> [!NOTE]
-> **Akademik Bildirim:** Bu proje, **İstanbul Teknik Üniversitesi (İTÜ) Makina Mühendisliği Lisans Programı** bünyesinde yürütülen **Mekatronik Sistem Tasarımı** dersi kapsamında **Aydıner Dikme (030220086)** tarafından geliştirilmiştir.
-
 Bu proje deposu, kalın yapısal çelik plakalarda ($80\text{ mm}$ S335) $13\text{ metre}$ boyundaki plaka kenarında hem **kaynak ağzı pah derinliğini** hem de silindirik/konik kule bükümü öncesi **düz kesim kavis yarıçapını (radyusunu)** eş zamanlı denetleyen otonom manyetik tekerlekli kalite kontrol robotunun **Simulink dinamik modelini** ve **5000 koşuluk Monte Carlo güvenilirlik analizini** barındırmaktadır.
 
 ---
